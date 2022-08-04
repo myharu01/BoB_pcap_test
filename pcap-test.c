@@ -38,6 +38,10 @@ bool parse(Param* param, int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
+	char name[] = "안두혁";
+	char mobile[] = "8262";
+	printf("[bob11]pcap-test[%s%s]\n\n", name, mobile);
+
 	if (!parse(&param, argc, argv)) //인자 정보가 제대로 되었는지 확인하는 조건문
 		return -1;
 	// printf("%s",param.dev_); // 출력 : dum0
@@ -147,6 +151,8 @@ int main(int argc, char* argv[]) {
 		if(header->caplen-(14+ip_head_size+data_offset) >= 10)
 			for(int i=0;i<10;i++)
 				printf("%x ",*sub_p++);
+		else if(header->caplen-(14+ip_head_size+data_offset) == 0)
+			printf("No data");
 		else
 			for(int i=0;i<header->caplen-(14+ip_head_size+data_offset);i++)
 				printf("%x ",*sub_p++);
