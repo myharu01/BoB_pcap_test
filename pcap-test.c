@@ -143,20 +143,29 @@ int main(int argc, char* argv[]) {
 		int data_offset = tcp_1byte/16*4;
 		// printf("Data Offset : \t\t%d\n",data_offset);
 
-		sub_p = (sub_p+5); //바이트 날리기
+		sub_p = (sub_p+7); //바이트 날리기
 
-		if(data_offset>20) sub_p = (sub_p+(data_offset-20)/4);
+		if(data_offset>20) sub_p = (sub_p+(data_offset-20));
+
+		int offset = 14+ip_head_size+data_offset;
+		int data_cnt = header->caplen-offset;
 
 		printf("Payload : \t\t");
-		if(header->caplen-(14+ip_head_size+data_offset) >= 10)
+		if(data_cnt >= 10)
 			for(int i=0;i<10;i++)
 				printf("%x ",*sub_p++);
-		else if(header->caplen-(14+ip_head_size+data_offset) == 0)
+		else if(data_cnt == 0)
 			printf("No data");
 		else
-			for(int i=0;i<header->caplen-(14+ip_head_size+data_offset);i++)
+			for(int i=0;i<header->caplen-offset;i++)
 				printf("%x ",*sub_p++);
 		printf("\n");
+		printf("gap : %d\n",14+ip_head_size+data_offset);
+
+		printf("\n\n");
+		for(int i=0;i<header->caplen;i++) printf("%x ",*p++);
+		printf("\n\n");
+
 
 		if (res == 0) continue;
 		if (res == PCAP_ERROR || res == PCAP_ERROR_BREAK) {//pcap_next_ex를 읽지 못했을때 오류
